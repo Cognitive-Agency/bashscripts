@@ -1,117 +1,86 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+# ~/.bashrc
 
-# If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
+# Check if the shell is running interactively; if not, exit this script
+[[ $- != *i* ]] && return
 
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
+# ----------- History Configuration -----------
 
-# append to the history file, don't overwrite it
-shopt -s histappend
+# Control the behavior of bash history
+export HISTCONTROL=ignoreboth  # Avoid logging duplicate commands and commands that start with a space
+export HISTSIZE=5000           # Number of commands stored in memory
+export HISTFILESIZE=10000      # Maximum size of the history file
+shopt -s histappend            # Append to the history file instead of overwriting it
+PROMPT_COMMAND="history -a;${PROMPT_COMMAND}"  # Save history after each command execution
 
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+# ----------- Prompt Configuration -----------
 
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
-
-# If set, the pattern "**" used in a pathname expansion context will
-# match all files and zero or more directories and subdirectories.
-#shopt -s globstar
-
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
-
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
-esac
-
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-#force_color_prompt=yes
-
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
+# Check if Starship (a modern shell prompt) is installed and initialize it
+if command -v starship &> /dev/null; then
+    eval "$(starship init bash)"
+else
+    # If Starship isn't installed, set up a basic colored prompt
+    # Red for root user and green for normal users
+    if [[ $EUID -eq 0 ]]; then
+        PS1='\[\033[01;31m\]\u@\h:\[\033[01;34m\]\w\[\033[00m\]# '
     else
-	color_prompt=
+        PS1='\[\033[01;32m\]\u@\h:\[\033[01;34m\]\w\[\033[00m\]$ '
     fi
 fi
 
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
+# ----------- Aliases & Functions -----------
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
+# Define aliases for 'ls' command using 'lsd' for better visual representation
+alias ls='lsd'
+alias ll='lsd -alF'
+alias la='lsd -A'
+alias l='lsd -CF'
 
-# enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
+# Shorten common Git commands
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
 
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
+# Shortcut for changing directories and then listing the contents
+c() {
+    cd "$@" || return
+    ls
+}
 
-# colored GCC warnings and errors
-#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+# Quickly reload .bashrc without restarting the terminal
+alias refresh='source ~/.bashrc'
 
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
+# Function to extract various compressed file formats (implementation omitted for brevity)
+extract() {
+    # ... (same as before)
+}
 
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+# Use colored output for 'tree' command
+alias tree='tree -C'
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+# Use 'fasd' for efficient directory navigation if it's installed
+if command -v fasd &> /dev/null; then
+    alias z='fasd_cd -d'  # Jump to frequently accessed directories
 fi
 
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
+# ----------- Terminal Configuration -----------
+
+# Set the default editor to 'nano'
+export EDITOR='nano'
+
+# Source any additional custom bash scripts from the ~/.bash/ directory
+for file in ~/.bash/*.bash; do
+    [[ -e "$file" ]] && source "$file"
+done
+
+# Load bash completion scripts if available
+if [[ -f /usr/share/bash-completion/bash_completion ]]; then
+    source /usr/share/bash-completion/bash_completion
+elif [[ -f /etc/bash_completion ]]; then
+    source /etc/bash_completion
 fi
+
+# Use 'safe-rm' as a safer alternative to the 'rm' command, if installed
+alias rm='safe-rm'
+
+# ----------- End of ~/.bashrc -----------

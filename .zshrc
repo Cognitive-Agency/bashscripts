@@ -4,48 +4,36 @@ export PATH="$HOME/bin:/usr/local/bin:$PATH:/usr/sbin:/sbin"
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-# Theme configuration.
-ZSH_THEME="robbyrussell"
+# Switch to Powerlevel10k theme for a more enhanced experience
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # --------------------------- #
 # Completion Configurations   #
 # --------------------------- #
-# Uncomment the below options if you need them:
 
-# Make completion case-sensitive.
-# CASE_SENSITIVE="true"
-
-# Allow hyphen-insensitivity during completion.
-# HYPHEN_INSENSITIVE="true"
+# Replace zsh-completions with zsh-autocomplete for real-time type-ahead completion
+plugins=( ${plugins[@]} zsh-autocomplete )
+plugins=( ${plugins[@]/zsh-completions} )
 
 # ----------------------- #
 # Update Configurations   #
 # ----------------------- #
 
-# Auto-update behavior for oh-my-zsh.
-# Uncomment the below option to enable reminders for updating:
-# zstyle ':omz:update' mode reminder
+# Enable reminders for updating
+zstyle ':omz:update' mode reminder
 
-# Configuration for how often to auto-update (in days).
-# Uncomment the below option to set the update frequency:
-# zstyle ':omz:update' frequency 7
+# Set the auto-update frequency to every 7 days
+zstyle ':omz:update' frequency 7
 
 # -------------------------- #
 # Plugins Configuration      #
 # -------------------------- #
 
-# Make sure you have installed all these plugins.
-# If not, you might need to clone their respective repositories 
-# into the $ZSH_CUSTOM/plugins/ directory.
-plugins=(
-    git
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    zsh-completions
-    fast-syntax-highlighting
-    zsh-interactive-cd
-    fzf-tab
-    zsh-z
+# Additional Plugins
+plugins+=(
+    colored-man-pages
+    docker
+    autojump
 )
 
 # Source oh-my-zsh to load the framework.
@@ -55,24 +43,64 @@ source $ZSH/oh-my-zsh.sh
 # User Configuration  #
 # ------------------- #
 
-# Uncomment below line to set language:
-# export LANG=en_US.UTF-8
+# Set default language
+export LANG=en_US.UTF-8
 
 # Set the default editor to vim.
 export EDITOR='vim'
 
+# Enhanced directory navigation
+autoload -Uz chpwd
+chpwd() {
+    ls
+}
+
 # ----------------- #
 # Personal Aliases  #
 # ----------------- #
-# User configuration ...
 
-PROMPT="%n@%m %~ %># "
+# Switch to exa for an enhanced ls experience (assuming exa is installed)
+alias ls='exa'
+alias la='exa -a'
+alias ll='exa -la'
+alias lt='exa -la --grid --sort=modified'
 
-# Personal aliases ...
+# Personal aliases and functions
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="cd ~/.oh-my-zsh"
-alias ll="ls -alF"
-alias la="ls -A"
-alias l="ls -CF"
+alias extract="extract"
+
+extract() {
+    if [ -f $1 ]; then
+        case $1 in
+            *.tar.bz2)  tar xjf $1     ;;
+            *.tar.gz)   tar xzf $1     ;;
+            *.bz2)      bunzip2 $1     ;;
+            *.rar)      unrar x $1     ;;
+            *.gz)       gunzip $1      ;;
+            *.tar)      tar xf $1      ;;
+            *.tbz2)     tar xjf $1     ;;
+            *.tgz)      tar xzf $1     ;;
+            *.zip)      unzip $1       ;;
+            *.Z)        uncompress $1  ;;
+            *.7z)       7z x $1        ;;
+            *)          echo "don't know how to extract '$1'" ;;
+        esac
+    else
+        echo "'$1' is not a valid file!"
+    fi
+}
+
+# FZF for an interactive history search
+bindkey '^R' history-incremental-search-backward
+autoload -Uz up-line-or-beginning-search
+autoload -Uz down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "^[[A" up-line-or-beginning-search
+bindkey "^[[B" down-line-or-beginning-search
+
+# Display a random command tip when the terminal starts
+print -P "%F{33}You can use %F{220}%Bsome-command%b%f for [description of the command]"
 
 # End of the .zshrc file.

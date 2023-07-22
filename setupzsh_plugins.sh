@@ -23,8 +23,12 @@ plugin_installed() {
 # Append plugin to zshrc if not present
 append_plugin_to_zshrc() {
     local plugin_name="$1"
-    if ! grep -q " $plugin_name " ~/.zshrc; then
-        sed -i.bak "/plugins=(/ s/)/ $plugin_name )/" ~/.zshrc
+    local plugin_string="plugins=("
+    local zshrc_content=$(<~/.zshrc)
+
+    if [[ ! $zshrc_content =~ $plugin_name ]]; then
+        local updated_content=${zshrc_content/$plugin_string/$plugin_string$'\n   '"$plugin_name"}
+        echo "$updated_content" > ~/.zshrc
     fi
 }
 
@@ -43,11 +47,12 @@ declare -A plugins
 plugins=(
     ["zsh-autosuggestions"]="https://github.com/zsh-users/zsh-autosuggestions"
     ["zsh-syntax-highlighting"]="https://github.com/zsh-users/zsh-syntax-highlighting.git"
-    ["zsh-completions"]="https://github.com/zsh-users/zsh-completions"
+    ["zsh-autocomplete"]="https://github.com/zsh-users/zsh-autocomplete.git"
     ["fast-syntax-highlighting"]="https://github.com/zdharma/fast-syntax-highlighting.git"
     ["zsh-interactive-cd"]="https://github.com/changyuheng/zsh-interactive-cd"
     ["fzf-tab"]="https://github.com/Aloxaf/fzf-tab"
     ["zsh-z"]="https://github.com/agkozak/zsh-z"
+    # You can add more plugins here following the same format
 )
 
 for plugin in "${!plugins[@]}"; do

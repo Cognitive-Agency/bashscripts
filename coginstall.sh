@@ -7,10 +7,7 @@ set -euo pipefail  # Enable bash strict mode
 trap "echo 'Script interrupted by user'; exit 1" INT
 
 print_message() {
-    local msg="$1"
-    echo "-----------------------------------"
-    echo "$msg"
-    echo "-----------------------------------"
+    echo -e "\033[1;34m$1\033[0m"
 }
 
 command_exists() {
@@ -32,9 +29,6 @@ done
 # Install common utilities and libraries.
 # Each installation step provides a short description for clarity.
 print_message "Updating System and Installing Basic Libraries"
-print_message() {
-    echo -e "\033[1;34m$1\033[0m"
-}
 
 sudo apt update
 sudo apt upgrade -y
@@ -81,8 +75,10 @@ install_package fd "Alternative to the find command."
 install_package neofetch "System info written in Bash."
 install_package mc "Visual file manager."
 install_package iproute2 "Network tools."
+install_package lsd "directory tool"
 
-
+print_message "Installing Starship prompt"
+curl -sS https://starship.rs/install.sh | bash
 
 print_message "Setting up Docker"
 # Set up Docker only if it isn't already installed.
