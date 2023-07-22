@@ -30,7 +30,7 @@ print_message "Updating and Installing Basic Libraries"
 # Merging the apt and apt-get commands for consistency
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y git awscli curl vim htop tmux build-essential zsh software-properties-common apt-transport-https ca-certificates gnupg-agent cmake gnupg nvtop screen glances parallel git-lfs
+sudo apt install -y git awscli curl vim htop tmux build-essential zsh software-properties-common apt-transport-https ca-certificates gnupg-agent cmake gnupg nvtop screen glances parallel git-lfs ffmpeg
 
 print_message "Setting up Docker"
 
@@ -79,8 +79,28 @@ distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
             sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
 
 sudo apt update
+sudo apt-get install -y nvidia-container-toolkit
 sudo nvidia-ctk runtime configure --runtime=docker
-sudo docker run --rm --runtime=nvidia --gpus all nvidia/cuda:11.6.2-base-ubuntu20.04 nvidia-smi
+sudo systemctl restart docker
+
+
+# Wait for Docker to be ready
+while ! sudo docker info >/dev/null 2>&1; do
+    echo "Waiting for Docker to start..."
+    sleep 2
+done
+
+#Pull Docker Images
+sudo docker pull nvidia/cuda:11.6.2-base-ubuntu20.04 nvidia-smi
+sudo docker pull nvcr.io/nvidia/pytorch:23.05-py3
+sudo docker pull mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
+sudo docker pull bitnami/deepspeed
+sudo docker pull nvcr.io/nvidia/nemo:23.04
+
+#Install Helm
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
 
 print_message "Setting up Oh My Zsh"
 
