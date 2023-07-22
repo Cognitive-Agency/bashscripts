@@ -106,28 +106,43 @@ mkdir -p ~/projects
 cd ~/projects
 
 #training 
+mkdir -p training
+cd training
 git clone https://github.com/mosaicml/composer.git mosaic-composer
 git clone https://github.com/mosaicml/llm-foundry.git mosiac-foundry
 git clone https://github.com/microsoft/DeepSpeed.git deepspeed
 git clone https://github.com/openai/triton.git openai-triton
+cd ..
+
+#techniques
+mkdir -p techniques
+cd techniques
 git clone https://github.com/vllm-project/vllm.git vllm 
 git clone https://github.com/openai/tiktoken.git tiktoken
+git clone https://github.com/TimDettmers/bitsandbytes.git bitsandbytes
+git clone https://github.com/huggingface/peft.git PEFT
+git clone https://github.com/microsoft/LoRA.git Lora
+cd ..
 
 #models
-git clone https://github.com/facebookresearch/llama.git
-git clone https://github.com/microsoft/JARVIS.git jarvis
+mkdir -p models
+cd models
+git clone https://github.com/facebookresearch/llama.git llama
 git clone https://github.com/EleutherAI/gpt-neox.git gpt-neox
+git clone https://github.com/microsoft/JARVIS.git jarvis
 git clone https://github.com/triton-inference-server/server.git triton-server
 git clone https://github.com/ShishirPatil/gorilla.git gorilla-llm
 git clone https://github.com/openai/openai-cookbook.git openai-cookbook
+cd ..
 
 #user interface
+mkdir -p "user interface"
+cd "user interface"
 git clone https://github.com/mckaywrigley/chatbot-ui.git chatbot-user-interface
 git clone https://github.com/mlc-ai/web-llm.git web-interface
 git clone https://github.com/openai/chatgpt-retrieval-plugin.git chatgpt-retrieval
 git clone https://github.com/lm-sys/FastChat.git FastChat
 git clone https://github.com/deepset-ai/haystack.git haystack
-
 
 print_message "Setting up Oh My Zsh"
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
