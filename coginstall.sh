@@ -78,7 +78,7 @@ sudo snap install lsd
 
 # Install Starship with automatic "yes" response
 print_message "Installing Starship prompt"
-yes | curl -sS https://starship.rs/install.sh | bash
+yes | curl -sS https://starship.rs/install.sh | sh
 
 print_message "Setting up Docker"
 # Set up Docker only if it isn't already installed.
@@ -217,7 +217,6 @@ clone_or_update https://github.com/openai/chatgpt-retrieval-plugin.git chatgpt-r
 clone_or_update https://github.com/lm-sys/FastChat.git FastChat
 clone_or_update https://github.com/deepset-ai/haystack.git haystack
 cd ~
-
 
 print_message "Setting up Oh My Zsh"
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
