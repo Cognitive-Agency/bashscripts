@@ -2,6 +2,8 @@
 
 set -euo pipefail  # Enable bash strict mode
 
+trap "echo 'Script interrupted by user'; exit 1" INT
+
 print_message() {
     local msg="$1"
     echo "-----------------------------------"
@@ -19,22 +21,18 @@ print_error() {
 }
 
 # Check for essential commands
-for cmd in curl wget sudo; do
+for cmd in curl wget sudo dpkg getent; do
     if ! command_exists "$cmd"; then
         print_error "$cmd is required but it's not installed."
     fi
 done
 
 print_message "Updating and Installing Basic Libraries"
-
-# Merging the apt and apt-get commands for consistency
 sudo apt update
 sudo apt upgrade -y
 sudo apt install -y git awscli curl vim htop tmux build-essential zsh software-properties-common apt-transport-https ca-certificates gnupg-agent cmake gnupg nvtop screen glances parallel git-lfs ffmpeg
 
 print_message "Setting up Docker"
-
-# Only proceed with Docker setup if not already installed
 if ! command_exists docker; then
     sudo install -m 0755 -d /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
@@ -56,8 +54,6 @@ else
 fi
 
 print_message "Setting up Miniconda"
-
-# Only proceed with Miniconda setup if not already installed
 if [ ! -d "$HOME/anaconda3" ]; then
     pushd /tmp
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -71,7 +67,6 @@ else
 fi
 
 print_message "Setting up NVIDIA Toolkit"
-
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
         && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
         && curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
@@ -89,6 +84,9 @@ while ! sudo docker info >/dev/null 2>&1; do
     sleep 2
 done
 
+# Echo before pulling Docker images
+echo "Pulling Docker images..."
+
 #Pull Docker Images
 sudo docker pull nvidia/cuda:11.1.1-devel-ubuntu20.04
 sudo docker pull nvcr.io/nvidia/pytorch:23.05-py3
@@ -97,13 +95,14 @@ sudo docker pull bitnami/deepspeed
 sudo docker pull nvcr.io/nvidia/nemo:23.04
 
 #Install Helm
+print_message "Installing Helm"
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 chmod 700 get_helm.sh
 ./get_helm.sh
+rm -f get_helm.sh
+
 
 print_message "Setting up Oh My Zsh"
-
-# Only proceed with Oh My Zsh setup if not already installed
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/setupzsh_plugins.sh
     chmod +x setupzsh_plugins.sh
@@ -114,3 +113,4 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
 else
     echo "Oh My Zsh is already installed, skipping installation."
 fi
+
