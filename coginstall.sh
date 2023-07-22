@@ -36,31 +36,27 @@ sudo apt update && sudo apt upgrade -y
 check_command_success
 
 # Install multiple packages in one go
-sudo apt install -y git awscli curl vim htop tmux build-essential zsh software-properties-common apt-transport-https ca-certificates gnupg-agent cmake 
-check_command_success
-
-print_message "Setting up Oh My Zsh"
-
-# Install Oh My Zsh for managing zsh configuration
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+sudo apt install -y git awscli curl vim htop tmux build-essential zsh software-properties-common apt-transport-https ca-certificates gnupg-agent cmake gnupg
 check_command_success
 
 print_message "Setting up Docker"
 
 # Add Docker official GPG key
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg-
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 check_command_success
 
 # Add Docker's repo
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-check_command_success
+echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-sudo apt update
+sudo apt-get update
 check_command_success
 
 # Install Docker and related tools
-sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 check_command_success
 
 # Create the Docker group and add the user to the group
@@ -88,6 +84,12 @@ echo "To finish the conda installation, run: source ~/.bashrc && conda --version
 check_command_success
 
 print_message "All packages installed!"
+
+print_message "Setting up Oh My Zsh"
+
+# Install Oh My Zsh for managing zsh configuration
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+check_command_success
 
 
 
