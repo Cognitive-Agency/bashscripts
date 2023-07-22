@@ -50,11 +50,6 @@ c() {
 # Quickly reload .bashrc without restarting the terminal
 alias refresh='source ~/.bashrc'
 
-# Function to extract various compressed file formats (implementation omitted for brevity)
-extract() {
-    # ... (same as before)
-}
-
 # Use colored output for 'tree' command
 alias tree='tree -C'
 
