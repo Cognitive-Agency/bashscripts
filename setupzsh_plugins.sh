@@ -47,7 +47,6 @@ declare -A plugins
 plugins=(
     ["zsh-autosuggestions"]="https://github.com/zsh-users/zsh-autosuggestions"
     ["zsh-syntax-highlighting"]="https://github.com/zsh-users/zsh-syntax-highlighting.git"
-    ["zsh-autocomplete"]="https://github.com/zsh-users/zsh-autocomplete.git"
     ["fast-syntax-highlighting"]="https://github.com/zdharma/fast-syntax-highlighting.git"
     ["zsh-interactive-cd"]="https://github.com/changyuheng/zsh-interactive-cd"
     ["fzf-tab"]="https://github.com/Aloxaf/fzf-tab"
