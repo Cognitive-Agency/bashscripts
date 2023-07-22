@@ -18,18 +18,19 @@ print_error() {
     exit 1
 }
 
-if ! command_exists curl; then
-    print_error "curl is required but it's not installed."
-fi  
+# Check for essential commands
+for cmd in curl wget sudo; do
+    if ! command_exists "$cmd"; then
+        print_error "$cmd is required but it's not installed."
+    fi
+done
 
 print_message "Updating and Installing Basic Libraries"
 
+# Merging the apt and apt-get commands for consistency
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y git awscli curl vim htop tmux build-essential zsh software-properties-common apt-transport-https ca-certificates gnupg-agent cmake gnupg nvtop screen glances parallel git-lfs
-
-sudo apt-get update \
-    && sudo apt-get install -y nvidia-container-toolkit-base
+sudo apt install -y git awscli curl vim htop tmux build-essential zsh software-properties-common apt-transport-https ca-certificates gnupg-agent cmake gnupg nvtop screen glances parallel git-lfs nvidia-container-toolkit
 
 print_message "Setting up Docker"
 
@@ -42,7 +43,7 @@ if ! command_exists docker; then
     $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
     sudo apt update
-    sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    sudo apt install -y docker-ce docker-ce-cli containerd.io
 
     # Check if docker group exists before attempting to add it
     if ! getent group docker > /dev/null; then
@@ -69,7 +70,17 @@ else
     echo "Miniconda is already installed, skipping installation."
 fi
 
-print_message "All packages installed!"
+print_message "Setting up NVIDIA Toolkit"
+
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+        && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+        && curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
+            sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+            sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+sudo apt update
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo docker run --rm --runtime=nvidia --gpus all nvidia/cuda:11.6.2-base-ubuntu20.04 nvidia-smi
 
 print_message "Setting up Oh My Zsh"
 
@@ -77,8 +88,10 @@ print_message "Setting up Oh My Zsh"
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/setupzsh_plugins.sh
     chmod +x setupzsh_plugins.sh
+    ./setupzsh_plugins.sh  # Running the downloaded script
 
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    rm -f setupzsh_plugins.sh  # Cleanup the setup script
 else
     echo "Oh My Zsh is already installed, skipping installation."
 fi
