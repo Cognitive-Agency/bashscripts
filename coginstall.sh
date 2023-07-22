@@ -70,11 +70,12 @@ install_package byobu "Text-based window manager and terminal multiplexer."
 install_package ranger "Console file manager with vi-like keybinding."
 install_package bat "Cat clone with syntax highlighting."
 install_package ripgrep "Ultra-fast text searcher."
-install_package fd "Alternative to the find command."
 install_package neofetch "System info written in Bash."
 install_package mc "Visual file manager."
 install_package iproute2 "Network tools."
-install_package lsd "directory tool"
+
+sudo snap install lsd
+
 
 print_message "Installing Starship prompt"
 curl -sS https://starship.rs/install.sh | bash
