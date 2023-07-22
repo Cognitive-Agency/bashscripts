@@ -76,9 +76,8 @@ install_package iproute2 "Network tools."
 
 sudo snap install lsd
 
-
 print_message "Installing Starship prompt"
-curl -sS https://starship.rs/install.sh | bash
+curl -sS https://starship.rs/install.sh | sh
 
 print_message "Setting up Docker"
 # Set up Docker only if it isn't already installed.
