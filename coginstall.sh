@@ -30,7 +30,7 @@ print_message "Updating and Installing Basic Libraries"
 # Merging the apt and apt-get commands for consistency
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y git awscli curl vim htop tmux build-essential zsh software-properties-common apt-transport-https ca-certificates gnupg-agent cmake gnupg nvtop screen glances parallel git-lfs nvidia-container-toolkit
+sudo apt install -y git awscli curl vim htop tmux build-essential zsh software-properties-common apt-transport-https ca-certificates gnupg-agent cmake gnupg nvtop screen glances parallel git-lfs
 
 print_message "Setting up Docker"
 
