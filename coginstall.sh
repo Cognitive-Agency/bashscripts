@@ -1,7 +1,9 @@
 #!/bin/bash
 
-set -euo pipefail  # Enable bash strict mode
+# This script sets up a Unix system with various tools and libraries.
+# It has safeguards such as bash strict mode to prevent potential issues.
 
+set -euo pipefail  # Enable bash strict mode
 trap "echo 'Script interrupted by user'; exit 1" INT
 
 print_message() {
@@ -27,12 +29,63 @@ for cmd in curl wget sudo dpkg getent; do
     fi
 done
 
-print_message "Updating and Installing Basic Libraries"
+# Install common utilities and libraries.
+# Each installation step provides a short description for clarity.
+print_message "Updating System and Installing Basic Libraries"
+print_message() {
+    echo -e "\033[1;34m$1\033[0m"
+}
+
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y git awscli curl vim htop tmux build-essential zsh software-properties-common apt-transport-https ca-certificates gnupg-agent cmake gnupg nvtop screen glances parallel git-lfs ffmpeg
+
+install_package() {
+    print_message "Installing $1: $2"
+    sudo apt install -y $1
+}
+
+install_package git "Distributed version control system."
+install_package awscli "Command-line interface for interacting with AWS services."
+install_package curl "Command-line tool for making web requests."
+install_package vim "Highly configurable text editor."
+install_package htop "Interactive process viewer for Unix."
+install_package tmux "Terminal multiplexer for managing multiple terminal sessions."
+install_package build-essential "Contains reference libraries for compiling C programs on Ubuntu."
+install_package zsh "Z shell - an extended Bourne shell with numerous improvements."
+install_package software-properties-common "Provides scripts for managing software."
+install_package apt-transport-https "Allows the package manager to transfer files and data over https."
+install_package ca-certificates "Common CA certificates for SSL applications."
+install_package gnupg-agent "GPG agent to handle private keys operations."
+install_package cmake "Manages the build process in an OS and in a compiler-independent manner."
+install_package gnupg "For encrypting and signing your data and communication."
+install_package nvtop "NVIDIA GPUs htop like monitoring tool."
+install_package screen "Tool for multiplexing several virtual consoles."
+install_package glances "Cross-platform monitoring tool."
+install_package parallel "Shell tool for executing jobs in parallel."
+install_package git-lfs "Git extension for versioning large files."
+install_package ffmpeg "Multimedia framework for various operations."
+install_package bash-completion "Programmable completion for bash commands."
+install_package silversearcher-ag "Ultra-fast text searcher."
+install_package tldr "Community-driven man pages."
+install_package fzf "Command-line fuzzy finder."
+install_package ncdu "Disk usage analyzer with ncurses interface."
+install_package jq "Command-line JSON processor."
+install_package tree "Displays directories as trees."
+install_package tmate "Instant terminal sharing."
+install_package byobu "Text-based window manager and terminal multiplexer."
+install_package ranger "Console file manager with vi-like keybinding."
+install_package bat "Cat clone with syntax highlighting."
+install_package z "Navigates directories faster."
+install_package ripgrep "Ultra-fast text searcher."
+install_package fd "Alternative to the find command."
+install_package neofetch "System info written in Bash."
+install_package mc "Visual file manager."
+install_package iproute2 "Network tools."
+
+
 
 print_message "Setting up Docker"
+# Set up Docker only if it isn't already installed.
 if ! command_exists docker; then
     sudo install -m 0755 -d /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
@@ -61,11 +114,16 @@ if [ ! -d "$HOME/anaconda3" ]; then
     rm -f Miniconda3-latest-Linux-x86_64.sh 
     popd
 
+    # These commands are appending the string "conda activate base" to the respective shell configuration files
+    echo "conda activate base" >> ~/.bashrc
+    echo "conda activate base" >> ~/.zshrc
+
     echo "To finish the conda installation, run: source ~/.bashrc && conda --version"
 else
     echo "Miniconda is already installed, skipping installation."
 fi
 
+# Setting up NVIDIA Toolkit for GPU-accelerated container support.
 print_message "Setting up NVIDIA Toolkit"
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
         && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
@@ -95,11 +153,15 @@ sudo docker pull bitnami/deepspeed
 sudo docker pull nvcr.io/nvidia/nemo:23.04
 
 #Install Helm
+# Helm helps manage Kubernetes applications with 'helm charts'.
 print_message "Installing Helm"
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 chmod 700 get_helm.sh
 ./get_helm.sh
 rm -f get_helm.sh
+
+# Clone various git repositories for training, techniques, models, and user interface.
+# Organize them into respective directories.
 
 #install git repositories
 mkdir -p ~/projects
@@ -146,13 +208,16 @@ git clone https://github.com/deepset-ai/haystack.git haystack
 
 print_message "Setting up Oh My Zsh"
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    # Install Oh My Zsh first
+    RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+    # Now run the plugins setup script
     wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/setupzsh_plugins.sh
     chmod +x setupzsh_plugins.sh
-    ./setupzsh_plugins.sh  # Running the downloaded script
-
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    ./setupzsh_plugins.sh
     rm -f setupzsh_plugins.sh  # Cleanup the setup script
 else
     echo "Oh My Zsh is already installed, skipping installation."
 fi
+
 
