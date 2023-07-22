@@ -36,7 +36,7 @@ sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin dock
 
 # Check if docker group exists before attempting to add it
 if ! getent group docker > /dev/null; then
-   sudo groupadd docker
+    sudo groupadd docker
 fi
 sudo usermod -aG docker $USER
 echo "NOTE: Please restart or re-login for Docker group changes to take effect."
