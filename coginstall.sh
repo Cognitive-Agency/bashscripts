@@ -101,6 +101,33 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 rm -f get_helm.sh
 
+#install git repositories
+mkdir -p ~/projects
+cd ~/projects
+
+#training 
+git clone https://github.com/mosaicml/composer.git mosaic-composer
+git clone https://github.com/mosaicml/llm-foundry.git mosiac-foundry
+git clone https://github.com/microsoft/DeepSpeed.git deepspeed
+git clone https://github.com/openai/triton.git openai-triton
+git clone https://github.com/vllm-project/vllm.git vllm 
+git clone https://github.com/openai/tiktoken.git tiktoken
+
+#models
+git clone https://github.com/facebookresearch/llama.git
+git clone https://github.com/microsoft/JARVIS.git jarvis
+git clone https://github.com/EleutherAI/gpt-neox.git gpt-neox
+git clone https://github.com/triton-inference-server/server.git triton-server
+git clone https://github.com/ShishirPatil/gorilla.git gorilla-llm
+git clone https://github.com/openai/openai-cookbook.git openai-cookbook
+
+#user interface
+git clone https://github.com/mckaywrigley/chatbot-ui.git chatbot-user-interface
+git clone https://github.com/mlc-ai/web-llm.git web-interface
+git clone https://github.com/openai/chatgpt-retrieval-plugin.git chatgpt-retrieval
+git clone https://github.com/lm-sys/FastChat.git FastChat
+git clone https://github.com/deepset-ai/haystack.git haystack
+
 
 print_message "Setting up Oh My Zsh"
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
