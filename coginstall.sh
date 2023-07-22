@@ -26,7 +26,7 @@ print_message "Updating and Installing Basic Libraries"
 
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y git awscli curl vim htop tmux build-essential zsh software-properties-common apt-transport-https ca-certificates gnupg-agent cmake gnupg nvidia-smi nvtop screen glances parallel 
+sudo apt install -y git awscli curl vim htop tmux build-essential zsh software-properties-common apt-transport-https ca-certificates gnupg-agent cmake gnupg nvtop screen glances parallel git-lfs
 
 sudo apt-get update \
     && sudo apt-get install -y nvidia-container-toolkit-base
