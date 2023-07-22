@@ -83,7 +83,6 @@ sudo apt-get install -y nvidia-container-toolkit
 sudo nvidia-ctk runtime configure --runtime=docker
 sudo systemctl restart docker
 
-
 # Wait for Docker to be ready
 while ! sudo docker info >/dev/null 2>&1; do
     echo "Waiting for Docker to start..."
@@ -91,7 +90,7 @@ while ! sudo docker info >/dev/null 2>&1; do
 done
 
 #Pull Docker Images
-sudo docker pull nvidia/cuda:11.6.2-base-ubuntu20.04 nvidia-smi
+sudo docker pull nvidia/cuda:11.1.1-devel-ubuntu20.04
 sudo docker pull nvcr.io/nvidia/pytorch:23.05-py3
 sudo docker pull mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
 sudo docker pull bitnami/deepspeed
