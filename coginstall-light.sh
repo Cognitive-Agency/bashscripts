@@ -154,26 +154,33 @@ fi
 
 # Installing CUDA Drivers **NOTE VERSION 11.8**"
 print_message "Installing CUDA Toolkit - **NOTE VERSION 11.8"
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin  # Download CUDA pin file
-sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600  # Move pin file to apt preferences directory
-wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda-repo-ubuntu2004-11-8-local_11.8.0-520.61.05-1_amd64.deb  # Download CUDA deb file
-sudo dpkg -i cuda-repo-ubuntu2004-11-8-local_11.8.0-520.61.05-1_amd64.deb  # Install CUDA deb file
-sudo cp /var/cuda-repo-ubuntu2004-11-8-local/cuda-*-keyring.gpg /usr/share/keyrings/  # Copy CUDA keyring to keyrings directory
-sudo apt-get update  # Update the list of packages
-sudo apt-get -y install cuda  # Install CUDA Toolkit
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
+sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
+wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda-repo-ubuntu2004-11-8-local_11.8.0-520.61.05-1_amd64.deb
+sudo dpkg -i cuda-repo-ubuntu2004-11-8-local_11.8.0-520.61.05-1_amd64.deb
+sudo cp /var/cuda-repo-ubuntu2004-11-8-local/cuda-*-keyring.gpg /usr/share/keyrings/
+sudo apt-get update
+sudo apt-get -y install cuda
 
-# Setting up NVIDIA Toolkit for GPU-accelerated container support.
-print_message "Setting up NVIDIA Toolkit"
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \  # Get the distribution name
-        && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \  # Download keyring
-        && curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \  # Download list file
-            sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \  # Replace https with https [signed-by=...] in the list file
-            sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list  # Write the list file to the sources.list.d directory
+# Add NVIDIA GPG key
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
 
-sudo apt update  # Update the list of packages
-sudo apt-get install -y nvidia-container-toolkit  # Install NVIDIA Toolkit
-sudo nvidia-ctk runtime configure --runtime=docker  # Configure Docker to use NVIDIA Toolkit
-sudo systemctl restart docker  # Restart Docker
+# Add the NVIDIA repository based on the Ubuntu version
+if curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | grep -q "404: Not Found"; then
+    echo "The NVIDIA repository for your Ubuntu version ($distribution) was not found."
+    exit 2
+else
+    curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    tee /etc/apt/sources.list.d/nvidia-container-toolkit.list > /dev/null
+fi
+
+echo "NVIDIA Toolkit repository added successfully. Please run 'sudo apt update' to update your package lists."
+
+sudo apt update
+sudo apt-get install -y nvidia-container-toolkit
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
 
 # Clean up CUDA installation as done with MiniConda
 print_message "Cleaning up CUDA installation files..."  # Clean up CUDA installation files
@@ -228,6 +235,7 @@ source ~/.zshrc
 else
     echo "Oh My Zsh is already installed, skipping installation."  
 fi
+
 
 print_message "Installation Summary:"
 echo "1. Updated the system and installed basic libraries."

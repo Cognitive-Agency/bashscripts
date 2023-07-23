@@ -154,13 +154,20 @@ sudo cp /var/cuda-repo-ubuntu2004-11-8-local/cuda-*-keyring.gpg /usr/share/keyri
 sudo apt-get update
 sudo apt-get -y install cuda
 
-# Setting up NVIDIA Toolkit for GPU-accelerated container support.
-print_message "Setting up NVIDIA Toolkit"
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
-        && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
-        && curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
-            sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-            sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+# Add NVIDIA GPG key
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+
+# Add the NVIDIA repository based on the Ubuntu version
+if curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | grep -q "404: Not Found"; then
+    echo "The NVIDIA repository for your Ubuntu version ($distribution) was not found."
+    exit 2
+else
+    curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    tee /etc/apt/sources.list.d/nvidia-container-toolkit.list > /dev/null
+fi
+
+echo "NVIDIA Toolkit repository added successfully. Please run 'sudo apt update' to update your package lists."
 
 sudo apt update
 sudo apt-get install -y nvidia-container-toolkit
