@@ -37,7 +37,6 @@ source ~/.bashrc
 #Download new zsh bash file file and replace old one
 print_message "Download new zsh bash file and replace old one"
 wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.zshrc -O ~/.zshrc
-source ~/.zshrc
 
 # Check for essential commands
 for cmd in curl wget sudo dpkg getent; do  # List of commands to check

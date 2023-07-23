@@ -13,7 +13,7 @@ print_message() {
 
 command_exists() {
     command -v "$1" >/dev/null 2>&1 # Check if command exists
-}
+}  
 
 print_error() {
     echo "Error: $1" >&2  # Print error message in red
@@ -28,7 +28,6 @@ source ~/.bashrc
 #Download new zsh bash file file and replace old one
 print_message "Downlaod new zsh bash file and replace old one"
 wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.zshrc -O ~/.zshrc
-source ~/.zshrc
 
 # Check for essential commands
 for cmd in curl wget sudo dpkg getent; do  # List of commands to check
