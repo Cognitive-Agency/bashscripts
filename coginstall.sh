@@ -182,8 +182,7 @@ export PATH=$PATH:/usr/local/cuda-11.8/bin
 echo 'export PATH=$PATH:/usr/local/cuda-11.8/bin' >> ~/.bashrc
     [[ -f ~/.zshrc ]] && echo 'export PATH=$PATH:/usr/local/cuda-11.8/bin' >> ~/.zshrc
 fi
-
-    
+  
 # Wait for Docker to be ready
 while ! sudo docker info >/dev/null 2>&1; do
     echo "Waiting for Docker to start..."
@@ -283,7 +282,8 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
     rm -f setupzsh_plugins.sh  # Cleanup the setup script
 
     # Install Powerlevel10k theme
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+sudo git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k
+
 else
     echo "Oh My Zsh is already installed, skipping installation."
 fi
