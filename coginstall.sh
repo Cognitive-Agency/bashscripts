@@ -3,6 +3,9 @@
 # This script sets up a Unix system with various tools and libraries.
 # It has safeguards such as bash strict mode to prevent potential issues.
 
+wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.bashrc
+source ~/.bashrc
+
 set -euo pipefail  # Enable bash strict mode
 trap "echo 'Script interrupted by user'; exit 1" INT
 
@@ -25,6 +28,21 @@ for cmd in curl wget sudo dpkg getent; do
         print_error "$cmd is required but it's not installed."
     fi
 done
+
+# Ensure snap is installed
+if ! command_exists snap; then
+    print_message "Installing snap..."
+    sudo apt install -y snapd
+else
+    echo "snap is already installed."
+fi
+
+# Check if snapd is active, if not wait and check again
+while ! systemctl is-active --quiet snapd; do
+    echo "Waiting for snapd service to start..."
+    sleep 2
+done
+
 
 # Install common utilities and libraries.
 # Each installation step provides a short description for clarity.
@@ -109,14 +127,24 @@ if [ ! -d "$HOME/anaconda3" ]; then
     rm -f Miniconda3-latest-Linux-x86_64.sh 
     popd
 
-    # These commands are appending the string "conda activate base" to the respective shell configuration files
-    echo "conda activate base" >> ~/.bashrc
-    echo "conda activate base" >> ~/.zshrc
+# These commands are appending the string "conda activate base" to the respective shell configuration files
+grep -qxF 'conda activate base' ~/.bashrc || echo 'conda activate base' >> ~/.bashrc
+grep -qxF 'conda activate base' ~/.zshrc || echo 'conda activate base' >> ~/.zshrc
 
     echo "To finish the conda installation, run: source ~/.bashrc && conda --version"
 else
     echo "Miniconda is already installed, skipping installation."
 fi
+
+# Installing CUDA Drivers **NOTE VERSION 11.8**"
+print_message "Installing CUDA Toolkit - **NOTE VERSION 11.8"
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
+sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
+wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda-repo-ubuntu2004-11-8-local_11.8.0-520.61.05-1_amd64.deb
+sudo dpkg -i cuda-repo-ubuntu2004-11-8-local_11.8.0-520.61.05-1_amd64.deb
+sudo cp /var/cuda-repo-ubuntu2004-11-8-local/cuda-*-keyring.gpg /usr/share/keyrings/
+sudo apt-get update
+sudo apt-get -y install cud
 
 # Setting up NVIDIA Toolkit for GPU-accelerated container support.
 print_message "Setting up NVIDIA Toolkit"
@@ -131,6 +159,23 @@ sudo apt-get install -y nvidia-container-toolkit
 sudo nvidia-ctk runtime configure --runtime=docker
 sudo systemctl restart docker
 
+# Clean up CUDA installation as done with MiniConda
+print_message "Cleaning up CUDA installation files..."
+rm -f cuda-repo-ubuntu2004-11-8-local_11.8.0-520.61.05-1_amd64.deb
+
+# Check if the CUDA bin directory is already in the PATH
+if [[ ":$PATH:" != *":/usr/local/cuda-11.8/bin:"* ]]; then
+    echo "Adding CUDA to the system PATH..."
+
+# Add CUDA bin directory to PATH for the current session
+export PATH=$PATH:/usr/local/cuda-11.8/bin
+
+# Make this change permanent by adding it to ~/.bashrc and ~/.zshrc (if you use Zsh)
+echo 'export PATH=$PATH:/usr/local/cuda-11.8/bin' >> ~/.bashrc
+    [[ -f ~/.zshrc ]] && echo 'export PATH=$PATH:/usr/local/cuda-11.8/bin' >> ~/.zshrc
+fi
+
+    
 # Wait for Docker to be ready
 while ! sudo docker info >/dev/null 2>&1; do
     echo "Waiting for Docker to start..."
@@ -230,5 +275,14 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
 else
     echo "Oh My Zsh is already installed, skipping installation."
 fi
-
+#Summary of actions
+print_message "Installation Summary:"  
+echo "1. Updated the system and installed basic libraries."
+echo "2. Installed snap tool."
+echo "3. Set up Docker."
+echo "4. Installed Miniconda."
+echo "5. Installed CUDA Toolkit version 11.8."
+echo "6. Set up NVIDIA Toolkit."
+echo "7. Installed Oh My Zsh and its plugins."
+echo "Please review any notes or warnings provided during the installation process."
 

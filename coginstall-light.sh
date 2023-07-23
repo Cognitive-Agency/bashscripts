@@ -47,7 +47,11 @@ else
     echo "snap is already installed."
 fi
 
-sudo systemctl start snapd
+# Check if snapd is active, if not wait and check again
+while ! systemctl is-active --quiet snapd; do
+    echo "Waiting for snapd service to start..."
+    sleep 2
+done
 
 # Install common utilities and libraries.
 # Each installation step provides a short description for clarity.
