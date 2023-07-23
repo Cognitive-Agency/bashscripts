@@ -108,6 +108,8 @@ install_package mc "Visual file manager."  # Midnight Commander
 install_package iproute2 "Network tools."  # ip command
 install_package autojump " #autojump is a faster way to navigate your filesystem. It works by maintaining a database of the directories you use the most from the command line."
 
+sudo apt-get install -y cargo
+
 sudo snap install lsd  
 
 # Install Starship 
@@ -197,6 +199,12 @@ export PATH=$PATH:/usr/local/cuda-11.8/bin  # Add CUDA bin directory to PATH for
 echo 'export PATH=$PATH:/usr/local/cuda-11.8/bin' >> ~/.bashrc  # Add CUDA bin directory to PATH for future sessions
     [[ -f ~/.zshrc ]] && echo 'export PATH=$PATH:/usr/local/cuda-11.8/bin' >> ~/.zshrc  # Add CUDA bin directory to PATH for future sessions
 fi
+
+# Installing EXA
+wget -c https://github.com/ogham/exa/releases/download/v0.8.0/exa-linux-x86_64-0.8.0.zip
+unzip exa-linux-x86_64-0.8.0.zip
+sudo mv exa-linux-x86_64 /usr/local/bin/exa
+rm exa-linux-x86_64-0.8.0.zip
 
 # Wait for Docker to be ready
 while ! sudo docker info >/dev/null 2>&1; do

@@ -100,6 +100,8 @@ install_package mc "Visual file manager."
 install_package iproute2 "Network tools." 
 install_package autojump "zsh directory tool."   
 
+sudo apt-get install -y cargo
+
 sudo snap install lsd   
 
 # Install Starship 
@@ -189,7 +191,13 @@ export PATH=$PATH:/usr/local/cuda-11.8/bin
 echo 'export PATH=$PATH:/usr/local/cuda-11.8/bin' >> ~/.bashrc
     [[ -f ~/.zshrc ]] && echo 'export PATH=$PATH:/usr/local/cuda-11.8/bin' >> ~/.zshrc
 fi
-  
+
+# Installing EXA
+wget -c https://github.com/ogham/exa/releases/download/v0.8.0/exa-linux-x86_64-0.8.0.zip
+unzip exa-linux-x86_64-0.8.0.zip
+sudo mv exa-linux-x86_64 /usr/local/bin/exa
+sudo rm exa-linux-x86_64-0.8.0.zip
+
 # Wait for Docker to be ready
 while ! sudo docker info >/dev/null 2>&1; do
     echo "Waiting for Docker to start..."
