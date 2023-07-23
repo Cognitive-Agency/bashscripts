@@ -6,16 +6,6 @@
 set -euo pipefail  # Enable bash strict mode
 trap "echo 'Script interrupted by user'; exit 1" INT  # Trap Ctrl-C
 
-#Download new bash file and replace old one
-print_message "Download new bash file and replace old one"
-wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.bashrc -O ~/.bashrc
-source ~/.bashrc
-
-#Download new zsh bash file file and replace old one
-print_message "Downlaod new zsh bash file and replace old one"
-wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.zshrc -O ~/.zshrc
-source ~/.zshrc
-
 print_message() {
     echo -e "\033[1;34m$1\033[0m"  # Print blue text
 }
@@ -38,6 +28,16 @@ spin() {
         done
     done
 }
+
+#Download new bash file and replace old one
+print_message "Download new bash file and replace old one"
+wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.bashrc -O ~/.bashrc
+source ~/.bashrc
+
+#Download new zsh bash file file and replace old one
+print_message "Download new zsh bash file and replace old one"
+wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.zshrc -O ~/.zshrc
+source ~/.zshrc
 
 # Check for essential commands
 for cmd in curl wget sudo dpkg getent; do  # List of commands to check
