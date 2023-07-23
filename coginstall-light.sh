@@ -228,9 +228,16 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
     ./setupzsh_plugins.sh  # Run the setup script
     rm -f setupzsh_plugins.sh  # Cleanup the setup script
 
-      # Install Powerlevel10k theme
-sudo git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k
+    # Install Powerlevel10k theme
+# Navigate to the custom themes directory
+cd ~/.oh-my-zsh/custom/themes
+# Clone the Powerlevel10k theme
+sudo git clone --depth=1 https://github.com/romkatv/powerlevel10k.git powerlevel10k
+# Update your ~/.zshrc to use the new theme
+echo 'ZSH_THEME="powerlevel10k/powerlevel10k"' >> ~/.zshrc
+# Reload your zsh configuration
 source ~/.zshrc
+
 
 
 else
