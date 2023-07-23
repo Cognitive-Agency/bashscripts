@@ -106,8 +106,9 @@ install_package ripgrep "Ultra-fast text searcher."  # ripgrep is faster than ag
 install_package neofetch "System info written in Bash."  # System info written in Bash
 install_package mc "Visual file manager."  # Midnight Commander
 install_package iproute2 "Network tools."  # ip command
+install_package apt-get install autojump." 
 
-sudo snap install lsd  # Modern ls command with colorful output
+sudo snap install lsd  
 
 # Install Starship 
 sudo snap install --edge starship

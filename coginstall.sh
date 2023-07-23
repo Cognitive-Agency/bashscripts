@@ -97,9 +97,10 @@ install_package bat "Cat clone with syntax highlighting."
 install_package ripgrep "Ultra-fast text searcher."
 install_package neofetch "System info written in Bash."
 install_package mc "Visual file manager."   
-install_package iproute2 "Network tools."    
+install_package iproute2 "Network tools." 
+install_package autojump."zsh tool"   
 
-sudo snap install lsd
+sudo snap install lsd   
 
 # Install Starship 
 sudo snap install --edge starship
@@ -269,6 +270,7 @@ clone_or_update https://github.com/lm-sys/FastChat.git FastChat
 clone_or_update https://github.com/deepset-ai/haystack.git haystack
 cd ~
 
+
 print_message "Setting up Oh My Zsh"
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     # Install Oh My Zsh first
@@ -279,9 +281,13 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
     chmod +x setupzsh_plugins.sh
     ./setupzsh_plugins.sh
     rm -f setupzsh_plugins.sh  # Cleanup the setup script
+
+    # Install Powerlevel10k theme
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 else
     echo "Oh My Zsh is already installed, skipping installation."
 fi
+
 #Summary of actions
 print_message "Installation Summary:"  
 echo "1. Updated the system and installed basic libraries."
