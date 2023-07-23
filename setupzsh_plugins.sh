@@ -59,3 +59,5 @@ for plugin in "${!plugins[@]}"; do
 done
 
 print_message "All installations complete!"
+
+
