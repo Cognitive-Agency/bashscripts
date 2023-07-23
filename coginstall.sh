@@ -3,44 +3,52 @@
 # This script sets up a Unix system with various tools and libraries.
 # It has safeguards such as bash strict mode to prevent potential issues.
 
-wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.bashrc
+set -euo pipefail  # Enable bash strict mode
+trap "echo 'Script interrupted by user'; exit 1" INT  # Trap Ctrl-C
+
+#Download new bash file and replace old one
+print_message "Download new bash file and replace old one"
+wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.bashrc -O ~/.bashrc
 source ~/.bashrc
 
-set -euo pipefail  # Enable bash strict mode
-trap "echo 'Script interrupted by user'; exit 1" INT
+#Download new zsh bash file file and replace old one
+print_message "Downlaod new zsh bash file and replace old one"
+wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.zshrc -O ~/.zshrc
+source ~/.zshrc
+
 
 print_message() {
-    echo -e "\033[1;34m$1\033[0m"
+    echo -e "\033[1;34m$1\033[0m" # Print message in blue
 }
 
 command_exists() {
-    command -v "$1" >/dev/null 2>&1
+    command -v "$1" >/dev/null 2>&1 # Check if command exists
 }
 
 print_error() {
-    echo "Error: $1" >&2
+    echo "Error: $1" >&2  # Print error message in red
     exit 1
 }
 
 # Check for essential commands
-for cmd in curl wget sudo dpkg getent; do
-    if ! command_exists "$cmd"; then
-        print_error "$cmd is required but it's not installed."
-    fi
+for cmd in curl wget sudo dpkg getent; do  # List of commands to check
+    if ! command_exists "$cmd"; then  # Check if command exists
+        print_error "$cmd is required but it's not installed."  # Print error message in red
+    fi  
 done
 
 # Ensure snap is installed
-if ! command_exists snap; then
-    print_message "Installing snap..."
-    sudo apt install -y snapd
+if ! command_exists snap; then  # Check if command exists
+    print_message "Installing snap..."  # Print message in blue
+    sudo apt install -y snapd  # Install snap
 else
-    echo "snap is already installed."
+    echo "snap is already installed."  # Print message in blue
 fi
 
 # Check if snapd is active, if not wait and check again
-while ! systemctl is-active --quiet snapd; do
-    echo "Waiting for snapd service to start..."
-    sleep 2
+while ! systemctl is-active --quiet snapd; do   
+    echo "Waiting for snapd service to start..."  # Print message in blue
+    sleep 5 # Wait for 5 seconds
 done
 
 
