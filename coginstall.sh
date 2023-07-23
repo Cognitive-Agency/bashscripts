@@ -98,7 +98,7 @@ install_package ripgrep "Ultra-fast text searcher."
 install_package neofetch "System info written in Bash."
 install_package mc "Visual file manager."   
 install_package iproute2 "Network tools." 
-install_package autojump."zsh tool"   
+install_package autojump "zsh directory tool."   
 
 sudo snap install lsd   
 
@@ -283,6 +283,7 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
 
     # Install Powerlevel10k theme
 sudo git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k
+source ~/.zshrc
 
 else
     echo "Oh My Zsh is already installed, skipping installation."

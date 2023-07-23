@@ -106,7 +106,7 @@ install_package ripgrep "Ultra-fast text searcher."  # ripgrep is faster than ag
 install_package neofetch "System info written in Bash."  # System info written in Bash
 install_package mc "Visual file manager."  # Midnight Commander
 install_package iproute2 "Network tools."  # ip command
-install_package apt-get install autojump." 
+install_package autojump " #autojump is a faster way to navigate your filesystem. It works by maintaining a database of the directories you use the most from the command line."
 
 sudo snap install lsd  
 
@@ -219,9 +219,30 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
     chmod +x setupzsh_plugins.sh  # Make the setup script executable
     ./setupzsh_plugins.sh  # Run the setup script
     rm -f setupzsh_plugins.sh  # Cleanup the setup script
+
+      # Install Powerlevel10k theme
+sudo git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k
+source ~/.zshrc
+
+
 else
     echo "Oh My Zsh is already installed, skipping installation."  
 fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 print_message "Installation Summary:"
 echo "1. Updated the system and installed basic libraries."

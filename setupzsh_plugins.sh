@@ -32,12 +32,6 @@ append_plugin_to_zshrc() {
     fi
 }
 
-print_message "Installing Tools"
-
-# Install essential tools
-sudo apt update
-sudo apt install -y jq fzf bat ripgrep tmux ncdu htop
-
 print_message "Setting up Zsh Plugins"
 
 # Define the location of the Oh My Zsh installation
