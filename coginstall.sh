@@ -26,7 +26,7 @@ wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.bashrc
 source ~/.bashrc
 
 #Download new zsh bash file file and replace old one
-print_message "Downlaod new zsh bash file and replace old one"
+print_message "Download new zsh bash file and replace old one"
 wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.zshrc -O ~/.zshrc
 
 # Check for essential commands
@@ -56,17 +56,17 @@ done
 print_message "Updating System and Installing Basic Libraries"
 
 sudo apt update
-sudo apt upgrade -y
+sudo apt upgrade -y  # Upgrade all packages
 
 install_package() {
-    print_message "Installing $1: $2"
-    sudo apt install -y $1
+    print_message "Installing $1: $2"  # Print message in blue
+    sudo apt install -y $1  # Install package
 }
 
-install_package git "Distributed version control system."
-install_package awscli "Command-line interface for interacting with AWS services."
-install_package curl "Command-line tool for making web requests."
-install_package vim "Highly configurable text editor."
+install_package git "Distributed version control system."  # Install Git
+install_package awscli "Command-line interface for interacting with AWS services."  # Install AWS CLI
+install_package curl "Command-line tool for making web requests."  # Install cURL
+install_package vim "Highly configurable text editor."    # Install Vim
 install_package htop "Interactive process viewer for Unix."
 install_package tmux "Terminal multiplexer for managing multiple terminal sessions."
 install_package build-essential "Contains reference libraries for compiling C programs on Ubuntu."
@@ -96,8 +96,8 @@ install_package ranger "Console file manager with vi-like keybinding."
 install_package bat "Cat clone with syntax highlighting."
 install_package ripgrep "Ultra-fast text searcher."
 install_package neofetch "System info written in Bash."
-install_package mc "Visual file manager."
-install_package iproute2 "Network tools."
+install_package mc "Visual file manager."   
+install_package iproute2 "Network tools."    
 
 sudo snap install lsd
 
