@@ -229,21 +229,6 @@ else
     echo "Oh My Zsh is already installed, skipping installation."  
 fi
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 print_message "Installation Summary:"
 echo "1. Updated the system and installed basic libraries."
 echo "2. Installed snap tool."

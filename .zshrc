@@ -9,23 +9,24 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Completion Configurations
 # Define the plugins array and add zsh-autocomplete to it
+
 plugins=(
-    zsh-autocomplete
-)
-
-# Update Configurations
-zstyle ':omz:update' mode reminder
-zstyle ':omz:update' frequency 7
-
-# Additional Plugins
-plugins+=(
-    colored-man-pages
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+    fast-syntax-highlighting
+    zsh-interactive-cd
+    zsh-z
     docker
     autojump
+    colored-man-pages
 )
 
 # Source oh-my-zsh to load the framework.
 source $ZSH/oh-my-zsh.sh
+
+# Update Configurations
+zstyle ':omz:update' mode reminder
+zstyle ':omz:update' frequency 7
 
 # User Configuration
 export LANG=en_US.UTF-8
