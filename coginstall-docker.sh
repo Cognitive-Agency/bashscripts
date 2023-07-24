@@ -1,32 +1,25 @@
 #!/bin/bash
 
-set -euo pipefail  # Enable bash strict mode
-trap "echo 'Script interrupted by user'; exit 1" INT  # Trap Ctrl-C
+set -e  # Exit on any error
 
 print_message() {
     echo -e "\033[1;34m$1\033[0m"  # Print blue text
 }
 
-command_exists() {
-    command -v "$1" >/dev/null 2>&1  # Check if command exists
-}
-
-# No need for sudo as Docker runs as root
 install_package() {
     print_message "Installing $1: $2"
-    apt install -y $1
+    apt-get install -y $1
 }
 
-# Download and replace zsh bash file
-print_message "Download new zsh bash file and replace old one"    
-wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.zshrc -O ~/.zshrc  
-
-# Install common utilities and libraries
+# Updating System and Installing Basic Libraries
 print_message "Updating System and Installing Basic Libraries"
-apt update
-apt upgrade -y
+apt-get update && apt-get upgrade -y && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# List of packages with their descriptions
+# Downloading new zsh bash file and replacing the old one
+print_message "Downloading new zsh bash file and replacing the old one"
+curl -fsSL https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.zshrc -o ~/.zshrc
+
+# Declaring list of packages with their descriptions
 declare -A packages=(
     ["git"]="Distributed version control system."
     ["awscli"]="Command-line interface for interacting with AWS services."
@@ -55,29 +48,27 @@ for pkg in "${!packages[@]}"; do
     install_package "$pkg" "${packages[$pkg]}"
 done
 
+# Setting up Miniconda
 print_message "Setting up Miniconda"
 if [ ! -d "$HOME/anaconda3" ]; then
-    pushd /tmp
-    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    cd /tmp
+    curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o Miniconda3-latest-Linux-x86_64.sh
     bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/anaconda3
-    rm -f Miniconda3-latest-Linux-x86_64.sh 
-    popd
+    rm -f Miniconda3-latest-Linux-x86_64.sh
     grep -qxF 'conda activate base' ~/.zshrc || echo 'conda activate base' >> ~/.zshrc
-else
-    echo "Miniconda is already installed, skipping installation."
-fi
 
+# Setting up Oh My Zsh
 print_message "Setting up Oh My Zsh"
 if [ ! -d "$HOME/.oh-my-zsh" ]; then  
-    RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" 
+    RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-    # Now run the plugins setup script
-    wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/setupzsh_plugins.sh 
+    # Running the plugins setup script
+    curl -fsSL https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/setupzsh_plugins.sh -o setupzsh_plugins.sh
     chmod +x setupzsh_plugins.sh 
     ./setupzsh_plugins.sh 
     rm -f setupzsh_plugins.sh 
 
-    # Install Powerlevel10k theme
+    # Installing Powerlevel10k theme
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
     echo 'ZSH_THEME="powerlevel10k/powerlevel10k"' >> ~/.zshrc
 else
@@ -85,3 +76,4 @@ else
 fi
 
 print_message "Installation complete."
+

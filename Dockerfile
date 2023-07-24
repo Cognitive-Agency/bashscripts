@@ -4,11 +4,10 @@ FROM nvcr.io/nvidia/pytorch:23.06-py3
 # Specify the maintainer or author of the Dockerfile
 LABEL maintainer="tim@cognitiveagency.ai"
 
-# Install git, wget, curl
-RUN apt-get update -q && apt-get install -y -q git wget curl && rm -rf /var/lib/apt/lists/*
-
-# Download and execute the script
-RUN wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/coginstall-docker.sh && \
+# Install required packages and execute the script
+RUN apt-get update -q && apt-get install -y -q git curl && rm -rf /var/lib/apt/lists/* && \
+    set -e && \
+    curl -fsSL https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/coginstall-docker.sh -o coginstall-docker.sh && \
     chmod +x coginstall-docker.sh && \
     ./coginstall-docker.sh && \
     rm coginstall-docker.sh
