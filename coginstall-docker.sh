@@ -1,13 +1,11 @@
 #!/bin/bash
 
-set -e  # Exit on any error
-
-# Downloading new zsh bash file and replacing the old one
-curl -fsSL https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.zshrc -o ~/.zshrc
-
 # Declaring list of packages with their descriptions
 apt update
 apt install -y git curl vim htop build-essential software-properties-common apt-transport-https ca-certificates gnupg-agent cmake gnupg nvtop screen git-lfs ffmpeg tree
+
+# Downloading new zsh bash file and replacing the old one
+curl -fsSL https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.zshrc -o ~/.zshrc
 
 # Setting up Miniconda
 if [ ! -d "$HOME/anaconda3" ]; then
