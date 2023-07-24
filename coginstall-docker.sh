@@ -13,7 +13,8 @@ install_package() {
 
 # Updating System and Installing Basic Libraries
 print_message "Updating System and Installing Basic Libraries"
-apt-get update && apt-get upgrade -y && apt-get clean && rm -rf /var/lib/apt/lists/*
+apt-get update
+apt-get clean
 
 # Downloading new zsh bash file and replacing the old one
 print_message "Downloading new zsh bash file and replacing the old one"
@@ -22,11 +23,9 @@ curl -fsSL https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.
 # Declaring list of packages with their descriptions
 declare -A packages=(
     ["git"]="Distributed version control system."
-    ["awscli"]="Command-line interface for interacting with AWS services."
     ["curl"]="Command-line tool for making web requests."
     ["vim"]="Highly configurable text editor."
     ["htop"]="Interactive process viewer for Unix."
-    ["tmux"]="Terminal multiplexer for managing multiple terminal sessions."
     ["build-essential"]="Contains reference libraries for compiling C programs on Ubuntu."
     ["software-properties-common"]="Provides scripts for managing software."
     ["apt-transport-https"]="Allows the package manager to transfer files and data over https."
@@ -36,8 +35,6 @@ declare -A packages=(
     ["gnupg"]="For encrypting and signing your data and communication."
     ["nvtop"]="NVIDIA GPUs htop like monitoring tool."
     ["screen"]="Tool for multiplexing several virtual consoles."
-    ["glances"]="Cross-platform monitoring tool."
-    ["parallel"]="Shell tool for executing jobs in parallel."
     ["git-lfs"]="Git extension for versioning large files."
     ["ffmpeg"]="Multimedia framework for various operations."
     ["tree"]="Displays directories as trees."
@@ -55,6 +52,7 @@ if [ ! -d "$HOME/anaconda3" ]; then
     bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/anaconda3
     rm -f Miniconda3-latest-Linux-x86_64.sh
     grep -qxF 'conda activate base' ~/.zshrc || echo 'conda activate base' >> ~/.zshrc
+fi
 
 # Setting up Oh My Zsh
 print_message "Setting up Oh My Zsh"
@@ -75,4 +73,5 @@ else
 fi
 
 print_message "Installation complete."
+
 
