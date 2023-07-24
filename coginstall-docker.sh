@@ -28,7 +28,6 @@ declare -A packages=(
     ["htop"]="Interactive process viewer for Unix."
     ["tmux"]="Terminal multiplexer for managing multiple terminal sessions."
     ["build-essential"]="Contains reference libraries for compiling C programs on Ubuntu."
-    ["zsh"]="Z shell - an extended Bourne shell with numerous improvements."
     ["software-properties-common"]="Provides scripts for managing software."
     ["apt-transport-https"]="Allows the package manager to transfer files and data over https."
     ["ca-certificates"]="Common CA certificates for SSL applications."
