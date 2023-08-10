@@ -320,3 +320,4 @@ echo "6. Set up NVIDIA Toolkit."
 echo "7. Installed Oh My Zsh and its plugins."
 echo "Please review any notes or warnings provided during the installation process."
 
+sudo pip install thefuck

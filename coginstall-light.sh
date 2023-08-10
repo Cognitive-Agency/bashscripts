@@ -245,6 +245,7 @@ echo 'ZSH_THEME="powerlevel10k/powerlevel10k"' >> ~/.zshrc
 # Reload your zsh configuration
 source ~/.zshrc
 
+#install 'the fuck' command
 
 
 else
@@ -261,3 +262,5 @@ echo "5. Installed CUDA Toolkit version 11.8."
 echo "6. Set up NVIDIA Toolkit."
 echo "7. Installed Oh My Zsh and its plugins."
 echo "Please review any notes or warnings provided during the installation process."
+
+sudo pip install thefuck
