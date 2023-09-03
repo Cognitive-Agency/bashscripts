@@ -203,8 +203,6 @@ done
 
 # Echo before pulling Docker images
 echo "Pulling Docker images..."
-spin &  # Start the spinner in the background
-SPIN_PID=$!
 
 sudo docker pull nvcr.io/nvidia/pytorch:23.05-py3  # Pull PyTorch image
 
