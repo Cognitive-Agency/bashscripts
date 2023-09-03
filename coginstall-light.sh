@@ -208,10 +208,7 @@ SPIN_PID=$!
 
 sudo docker pull nvcr.io/nvidia/pytorch:23.05-py3  # Pull PyTorch image
 
-kill -9 $SPIN_PID  # Kill the spinner after the images have been pulled
 echo -e "\rDocker images pulled successfully.          "
-
-trap "kill -9 $SPIN_PID" EXIT  # Ensure spinner stops when the script exits
 
 print_message "Setting up Oh My Zsh"
 if [ ! -d "$HOME/.oh-my-zsh" ]; then  
