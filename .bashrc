@@ -78,4 +78,6 @@ fi
 # Use 'safe-rm' as a safer alternative to the 'rm' command, if installed
 alias rm='safe-rm'
 
+PATH="$HOME/anaconda3/bin:$PATH"
+
 # ----------- End of ~/.bashrc -----------

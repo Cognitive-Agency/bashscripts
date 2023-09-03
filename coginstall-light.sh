@@ -19,16 +19,6 @@ print_error() {
     exit 1
 }
 
-spin() {
-    local -a spinner=('|' '/' '-' '\')  # Spinner characters
-    while true; do
-        for i in "${spinner[@]}"; do
-            echo -ne "\r$i"
-            sleep 0.2
-        done
-    done
-}
-
 #Download new bash file and replace old one
 print_message "Download new bash file and replace old one"
 wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.bashrc -O ~/.bashrc
@@ -144,29 +134,28 @@ else
     echo "Docker is already installed, skipping installation."
 fi
 
+# Conda installation and path setup
 print_message "Setting up Miniconda"
 if [ ! -d "$HOME/anaconda3" ]; then
     pushd /tmp
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
     bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/anaconda3
-    rm -f Miniconda3-latest-Linux-x86_64.sh 
     popd
 
-# These commands are appending the string "conda activate base" to the respective shell configuration files
-grep -qxF 'conda activate base' ~/.bashrc || echo 'conda activate base' >> ~/.bashrc
-grep -qxF 'conda activate base' ~/.zshrc || echo 'conda activate base' >> ~/.zshrc
-
-    echo "To finish the conda installation, run: source ~/.bashrc && conda --version"
+    echo 'export PATH="$HOME/anaconda3/bin:$PATH"' >> ~/.bashrc
+    echo 'conda activate base' >> ~/.bashrc
+    echo 'export PATH="$HOME/anaconda3/bin:$PATH"' >> ~/.zshrc
+    echo 'conda activate base' >> ~/.zshrc
 else
     echo "Miniconda is already installed, skipping installation."
 fi
 
-# Installing CUDA Drivers **NOTE VERSION 11.8**"
+# Installing CUDA Drivers **NOTE VERSION 12.1*"
 wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
 sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
-wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda-repo-ubuntu2004-11-8-local_11.8.0-520.61.05-1_amd64.deb
-sudo dpkg -i cuda-repo-ubuntu2004-11-8-local_11.8.0-520.61.05-1_amd64.deb
-sudo cp /var/cuda-repo-ubuntu2004-11-8-local/cuda-*-keyring.gpg /usr/share/keyrings/
+wget https://developer.download.nvidia.com/compute/cuda/12.1.0/local_installers/cuda-repo-ubuntu2004-12-1-local_12.1.0-530.30.02-1_amd64.deb
+sudo dpkg -i cuda-repo-ubuntu2004-12-1-local_12.1.0-530.30.02-1_amd64.deb
+sudo cp /var/cuda-repo-ubuntu2004-12-1-local/cuda-*-keyring.gpg /usr/share/keyrings/
 sudo apt-get update
 sudo apt-get -y install cuda
 
@@ -186,18 +175,18 @@ sudo systemctl restart docker
 
 # Clean up CUDA installation as done with MiniConda
 print_message "Cleaning up CUDA installation files..."  # Clean up CUDA installation files
-rm -f cuda-repo-ubuntu2004-11-8-local_11.8.0-520.61.05-1_amd64.deb  # Remove CUDA deb file
+rm -f cuda-repo-ubuntu2004-12-1-local_12.1.0-530.30.02-1_amd64.deb  # Remove CUDA deb file
 
 # Check if the CUDA bin directory is already in the PATH
-if [[ ":$PATH:" != *":/usr/local/cuda-11.8/bin:"* ]]; then  # Check if CUDA bin directory is already in the PATH
+if [[ ":$PATH:" != *":/usr/local/cuda-12.1/bin:"* ]]; then  # Check if CUDA bin directory is already in the PATH
     echo "Adding CUDA to the system PATH..."       
 
 # Add CUDA bin directory to PATH for the current session
-export PATH=$PATH:/usr/local/cuda-11.8/bin  # Add CUDA bin directory to PATH for the current session
+export PATH=$PATH:/usr/local/cuda-12.1/bin  # Add CUDA bin directory to PATH for the current session
 
 # Make this change permanent by adding it to ~/.bashrc and ~/.zshrc (if you use Zsh)
-echo 'export PATH=$PATH:/usr/local/cuda-11.8/bin' >> ~/.bashrc  # Add CUDA bin directory to PATH for future sessions
-    [[ -f ~/.zshrc ]] && echo 'export PATH=$PATH:/usr/local/cuda-11.8/bin' >> ~/.zshrc  # Add CUDA bin directory to PATH for future sessions
+echo 'export PATH=$PATH:/usr/local/cuda-12.1/bin' >> ~/.bashrc  # Add CUDA bin directory to PATH for future sessions
+    [[ -f ~/.zshrc ]] && echo 'export PATH=$PATH:/usr/local/cuda-12.1/bin' >> ~/.zshrc  # Add CUDA bin directory to PATH for future sessions
 fi
 
 # Installing EXA
