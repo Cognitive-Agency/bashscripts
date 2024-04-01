@@ -64,7 +64,6 @@ install_package vim "Highly configurable text editor."  # Highly configurable te
 install_package htop "Interactive process viewer for Unix."  # Interactive process viewer for Unix
 install_package tmux "Terminal multiplexer for managing multiple terminal sessions."  # Terminal multiplexer for managing multiple terminal sessions
 install_package build-essential "Contains reference libraries for compiling C programs on Ubuntu."  # Contains reference libraries for compiling C programs on Ubuntu
-install_package zsh "Z shell - an extended Bourne shell with numerous improvements."  # Z shell - an extended Bourne shell with numerous improvements
 install_package software-properties-common "Provides scripts for managing software."  # Provides scripts for managing software
 install_package apt-transport-https "Allows the package manager to transfer files and data over https."  # Allows the package manager to transfer files and data over https
 install_package ca-certificates "Common CA certificates for SSL applications."  # Common CA certificates for SSL applications
