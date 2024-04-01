@@ -24,10 +24,6 @@ print_message "Download new bash file and replace old one"
 wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.bashrc -O ~/.bashrc
 source ~/.bashrc
 
-#Download new zsh bash file file and replace old one
-print_message "Download new zsh bash file and replace old one"
-wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.zshrc -O ~/.zshrc
-
 # Check for essential commands
 for cmd in curl wget sudo dpkg getent; do  # List of commands to check
     if ! command_exists "$cmd"; then   # Check if command exists
@@ -101,16 +97,6 @@ install_package autojump " #autojump is a faster way to navigate your filesystem
 sudo apt-get install -y cargo
 
 sudo snap install lsd  
-
-#install 'the fuck' command
-echo 'deb http://download.opensuse.org/repositories/shells:/zsh-users:/zsh-autosuggestions/xUbuntu_20.04/ /' | sudo tee /etc/apt/sources.list.d/shells:zsh-users:zsh-autosuggestions.list
-curl -fsSL https://download.opensuse.org/repositories/shells:zsh-users:zsh-autosuggestions/xUbuntu_20.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_zsh-users_zsh-autosuggestions.gpg > /dev/null
-sudo apt update
-sudo apt install zsh-autosuggestions
-
-
-# Install Starship 
-sudo snap install --edge starship
 
 print_message "Setting up Docker"
 # Set up Docker only if it isn't already installed.
@@ -189,12 +175,6 @@ echo 'export PATH=$PATH:/usr/local/cuda-12.1/bin' >> ~/.bashrc  # Add CUDA bin d
     [[ -f ~/.zshrc ]] && echo 'export PATH=$PATH:/usr/local/cuda-12.1/bin' >> ~/.zshrc  # Add CUDA bin directory to PATH for future sessions
 fi
 
-# Installing EXA
-wget -c https://github.com/ogham/exa/releases/download/v0.8.0/exa-linux-x86_64-0.8.0.zip
-unzip exa-linux-x86_64-0.8.0.zip
-sudo mv exa-linux-x86_64 /usr/local/bin/exa
-rm exa-linux-x86_64-0.8.0.zip
-
 # Wait for Docker to be ready
 while ! sudo docker info >/dev/null 2>&1; do
     echo "Waiting for Docker to start..."
@@ -208,35 +188,6 @@ sudo docker pull nvcr.io/nvidia/pytorch:23.05-py3  # Pull PyTorch image
 
 echo -e "\rDocker images pulled successfully.          "
 
-print_message "Setting up Oh My Zsh"
-if [ ! -d "$HOME/.oh-my-zsh" ]; then  
-    # Install Oh My Zsh first  
-    RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"  # Install Oh My Zsh
-
-    # Now run the plugins setup script
-    wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/setupzsh_plugins.sh  # Download the setup script
-    chmod +x setupzsh_plugins.sh  # Make the setup script executable
-    ./setupzsh_plugins.sh  # Run the setup script
-    rm -f setupzsh_plugins.sh  # Cleanup the setup script
-
-    # Install Powerlevel10k theme
-# Navigate to the custom themes directory
-cd ~/.oh-my-zsh/custom/themes
-# Clone the Powerlevel10k theme
-sudo git clone --depth=1 https://github.com/romkatv/powerlevel10k.git powerlevel10k
-# Update your ~/.zshrc to use the new theme
-echo 'ZSH_THEME="powerlevel10k/powerlevel10k"' >> ~/.zshrc
-# Reload your zsh configuration
-source ~/.zshrc
-
-#install 'the fuck' command
-
-
-else
-    echo "Oh My Zsh is already installed, skipping installation."  
-fi
-
-
 print_message "Installation Summary:"
 echo "1. Updated the system and installed basic libraries."
 echo "2. Installed snap tool."
@@ -244,7 +195,6 @@ echo "3. Set up Docker."
 echo "4. Installed Miniconda."
 echo "5. Installed CUDA Toolkit version 12.1."
 echo "6. Set up NVIDIA Toolkit."
-echo "7. Installed Oh My Zsh and its plugins."
 echo "Please review any notes or warnings provided during the installation process."
 
 sudo pip install thefuck
