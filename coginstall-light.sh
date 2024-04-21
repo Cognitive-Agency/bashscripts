@@ -151,9 +151,17 @@ sudo apt-get install -y nvidia-container-toolkit
 sudo nvidia-ctk runtime configure --runtime=docker
 sudo systemctl restart docker
 
-# Clean up CUDA installation as done with MiniConda
-print_message "Cleaning up CUDA installation files..."  # Clean up CUDA installation files
-rm -f cuda-repo-ubuntu2004-12-1-local_12.1.0-530.30.02-1_amd64.deb  # Remove CUDA deb file
+# Clean up CUDA installation 
+print_message "Cleaning up CUDA installation files..."
+# Ensure the correct file name is referenced
+rm -f /var/cuda-repo-ubuntu2204-12-1-local/cuda-repo-ubuntu2204-12-1-local_12.1.0-530.30.02-1_amd64.deb
+
+# Check if the file has been successfully removed
+if [ ! -f /var/cuda-repo-ubuntu2204-12-1-local/cuda-repo-ubuntu2204-12-1-local_12.1.0-530.30.02-1_amd64.deb ]; then
+    echo "CUDA installation files cleaned up successfully."
+else
+    echo "Failed to remove CUDA installation files. Manual cleanup may be required."
+fi
 
 # Check if the CUDA bin directory is already in the PATH
 if [[ ":$PATH:" != *":/usr/local/cuda-12.1/bin:"* ]]; then  # Check if CUDA bin directory is already in the PATH
