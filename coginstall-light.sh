@@ -19,10 +19,6 @@ print_error() {
     exit 1
 }
 
-#Download new bash file and replace old one
-print_message "Download new bash file and replace old one"
-wget https://raw.githubusercontent.com/Cognitive-Agency/bashscripts/main/.bashrc -O ~/.bashrc
-source ~/.bashrc
 
 # Check for essential commands
 for cmd in curl wget sudo dpkg getent; do  # List of commands to check
@@ -91,7 +87,6 @@ install_package ripgrep "Ultra-fast text searcher."  # ripgrep is faster than ag
 install_package neofetch "System info written in Bash."  # System info written in Bash
 install_package mc "Visual file manager."  # Midnight Commander
 install_package iproute2 "Network tools."  # ip command
-install_package autojump " #autojump is a faster way to navigate your filesystem. It works by maintaining a database of the directories you use the most from the command line."
 
 sudo apt-get install -y cargo
 
@@ -129,18 +124,16 @@ if [ ! -d "$HOME/anaconda3" ]; then
 
     echo 'export PATH="$HOME/anaconda3/bin:$PATH"' >> ~/.bashrc
     echo 'conda activate base' >> ~/.bashrc
-    echo 'export PATH="$HOME/anaconda3/bin:$PATH"' >> ~/.zshrc
-    echo 'conda activate base' >> ~/.zshrc
 else
     echo "Miniconda is already installed, skipping installation."
 fi
 
 # Installing CUDA Drivers **NOTE VERSION 12.1*"
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
-sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
-wget https://developer.download.nvidia.com/compute/cuda/12.1.0/local_installers/cuda-repo-ubuntu2004-12-1-local_12.1.0-530.30.02-1_amd64.deb
-sudo dpkg -i cuda-repo-ubuntu2004-12-1-local_12.1.0-530.30.02-1_amd64.deb
-sudo cp /var/cuda-repo-ubuntu2004-12-1-local/cuda-*-keyring.gpg /usr/share/keyrings/
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
+sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
+wget https://developer.download.nvidia.com/compute/cuda/12.1.0/local_installers/cuda-repo-ubuntu2204-12-1-local_12.1.0-530.30.02-1_amd64.deb
+sudo dpkg -i cuda-repo-ubuntu2204-12-1-local_12.1.0-530.30.02-1_amd64.deb
+sudo cp /var/cuda-repo-ubuntu2204-12-1-local/cuda-*-keyring.gpg /usr/share/keyrings/
 sudo apt-get update
 sudo apt-get -y install cuda
 
@@ -171,8 +164,6 @@ export PATH=$PATH:/usr/local/cuda-12.1/bin  # Add CUDA bin directory to PATH for
 
 # Make this change permanent by adding it to ~/.bashrc and ~/.zshrc (if you use Zsh)
 echo 'export PATH=$PATH:/usr/local/cuda-12.1/bin' >> ~/.bashrc  # Add CUDA bin directory to PATH for future sessions
-    [[ -f ~/.zshrc ]] && echo 'export PATH=$PATH:/usr/local/cuda-12.1/bin' >> ~/.zshrc  # Add CUDA bin directory to PATH for future sessions
-fi
 
 # Wait for Docker to be ready
 while ! sudo docker info >/dev/null 2>&1; do
@@ -195,5 +186,3 @@ echo "4. Installed Miniconda."
 echo "5. Installed CUDA Toolkit version 12.1."
 echo "6. Set up NVIDIA Toolkit."
 echo "Please review any notes or warnings provided during the installation process."
-
-sudo pip install thefuck
