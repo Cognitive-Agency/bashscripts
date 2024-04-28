@@ -128,14 +128,14 @@ else
     echo "Miniconda is already installed, skipping installation."
 fi
 
-# Installing CUDA Drivers **NOTE VERSION 12.1*"
+# Installing CUDA Drivers **NOTE VERSION 12.3*"
 wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
 sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
-wget https://developer.download.nvidia.com/compute/cuda/12.1.0/local_installers/cuda-repo-ubuntu2204-12-1-local_12.1.0-530.30.02-1_amd64.deb
-sudo dpkg -i cuda-repo-ubuntu2204-12-1-local_12.1.0-530.30.02-1_amd64.deb
-sudo cp /var/cuda-repo-ubuntu2204-12-1-local/cuda-*-keyring.gpg /usr/share/keyrings/
+wget https://developer.download.nvidia.com/compute/cuda/12.3.0/local_installers/cuda-repo-ubuntu2204-12-3-local_12.3.0-545.23.06-1_amd64.deb
+sudo dpkg -i cuda-repo-ubuntu2204-12-3-local_12.3.0-545.23.06-1_amd64.deb
+sudo cp /var/cuda-repo-ubuntu2204-12-3-local/cuda-*-keyring.gpg /usr/share/keyrings/
 sudo apt-get update
-sudo apt-get -y install cuda
+sudo apt-get -y install cuda-toolkit-12-3
 
 # Install NVIDIA container toolkit
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
@@ -154,24 +154,31 @@ sudo systemctl restart docker
 # Clean up CUDA installation 
 print_message "Cleaning up CUDA installation files..."
 # Ensure the correct file name is referenced
-rm -f /var/cuda-repo-ubuntu2204-12-1-local/cuda-repo-ubuntu2204-12-1-local_12.1.0-530.30.02-1_amd64.deb
+rm -f cuda-repo-ubuntu2204-12-3-local_12.3.0-545.23.06-1_amd64.deb
 
 # Check if the file has been successfully removed
-if [ ! -f /var/cuda-repo-ubuntu2204-12-1-local/cuda-repo-ubuntu2204-12-1-local_12.1.0-530.30.02-1_amd64.deb ]; then
+if [ ! -f cuda-repo-ubuntu2204-12-3-local_12.3.0-545.23.06-1_amd64.deb ]; then
     echo "CUDA installation files cleaned up successfully."
 else
     echo "Failed to remove CUDA installation files. Manual cleanup may be required."
 fi
 
+# Check if CUDA toolkit is installed
+if [ -f "/usr/local/cuda-12.3/bin/nvcc" ]; then
+    echo "CUDA toolkit is installed successfully."
+else
+    echo "CUDA toolkit installation failed. Please check the installation logs."
+fi
+
 # Check if the CUDA bin directory is already in the PATH
-if [[ ":$PATH:" != *":/usr/local/cuda-12.1/bin:"* ]]; then  # Check if CUDA bin directory is already in the PATH
+if [[ ":$PATH:" != *":/usr/local/cuda-12.3/bin:"* ]]; then
     echo "Adding CUDA to the system PATH..."       
 
 # Add CUDA bin directory to PATH for the current session
-export PATH=$PATH:/usr/local/cuda-12.1/bin  # Add CUDA bin directory to PATH for the current session
+export PATH=$PATH:/usr/local/cuda-12.3/bin
 
 # Make this change permanent by adding it to ~/.bashrc and ~/.zshrc (if you use Zsh)
-echo 'export PATH=$PATH:/usr/local/cuda-12.1/bin' >> ~/.bashrc  # Add CUDA bin directory to PATH for future sessions
+echo 'export PATH=$PATH:/usr/local/cuda-12.3/bin' >> ~/.bashrc
 
 # Wait for Docker to be ready
 while ! sudo docker info >/dev/null 2>&1; do
@@ -191,6 +198,8 @@ echo "1. Updated the system and installed basic libraries."
 echo "2. Installed snap tool."
 echo "3. Set up Docker."
 echo "4. Installed Miniconda."
-echo "5. Installed CUDA Toolkit version 12.1."
+echo "5. Installed CUDA Toolkit version 12.3."
 echo "6. Set up NVIDIA Toolkit."
 echo "Please review any notes or warnings provided during the installation process."
+
+echo "Installation complete. Please reboot your system to ensure all changes take effect."
